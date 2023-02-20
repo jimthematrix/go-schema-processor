@@ -1079,17 +1079,19 @@ type mtAppender interface {
 
 func AddEntriesToMerkleTree(ctx context.Context, mt mtAppender,
 	entries []RDFEntry) error {
-
+	fmt.Println("=== calling AddEntriesToMerkleTree()")
 	for _, e := range entries {
 		key, val, err := e.KeyValueMtEntries()
 		if err != nil {
 			return err
 		}
+		fmt.Printf("\tkey: %d, value: %d\n", key, val)
 
 		err = mt.Add(ctx, key, val)
 		if err != nil {
 			return err
 		}
+		fmt.Println("\tadded entry %d", key)
 	}
 
 	return nil
