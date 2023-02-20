@@ -1201,7 +1201,7 @@ func WithSafeMode(safeMode bool) MerklizeOption {
 // Merklizer
 func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	opts ...MerklizeOption) (*Merklizer, error) {
-
+	fmt.Println("=== calling MerklizeJSONLD()")
 	mz := &Merklizer{safeMode: true}
 	for _, o := range opts {
 		o(mz)
@@ -1215,6 +1215,7 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 		}
 		mz.mt = MerkleTreeSQLAdapter(mt)
 	}
+	fmt.Printf("\tmz: %+v\n", mz)
 
 	// if hasher is not set with options, initialize it to default
 	if mz.hasher == nil {
@@ -1232,6 +1233,7 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("\tsource doc: %+v\n", obj)
 
 	proc := ld.NewJsonLdProcessor()
 	options := ld.NewJsonLdOptions("")
@@ -1242,6 +1244,7 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("\tnormalized doc: %+v\n", normDoc)
 
 	dataset, ok := normDoc.(*ld.RDFDataset)
 	if !ok {
@@ -1252,6 +1255,7 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("\tentries from RDF: %+v\n", entries)
 
 	mz.entries = make(map[string]RDFEntry, len(entries))
 	for _, e := range entries {
@@ -1267,6 +1271,7 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("\tmz.mt: %+v\n", mz.mt)
 
 	mz.compacted, err = proc.Compact(obj, nil, options)
 	return mz, err
