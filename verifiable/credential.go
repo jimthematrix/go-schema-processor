@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	core "github.com/iden3/go-iden3-core"
@@ -40,6 +41,7 @@ func (vc *W3CCredential) Merklize(ctx context.Context) (*merklize.Merklizer, err
 		return nil, err
 	}
 	delete(credentialAsMap, "proof")
+	fmt.Printf("\tcredential as map: %+v\n", credentialAsMap)
 
 	credentialWithoutProofBytes, err := json.Marshal(credentialAsMap)
 	if err != nil {
@@ -47,6 +49,7 @@ func (vc *W3CCredential) Merklize(ctx context.Context) (*merklize.Merklizer, err
 	}
 
 	mk, err := merklize.MerklizeJSONLD(ctx, bytes.NewReader(credentialWithoutProofBytes))
+	fmt.Printf("\tmk: %+v, err: %s\n", mk, err)
 	if err != nil {
 		return nil, err
 	}
