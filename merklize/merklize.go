@@ -1247,7 +1247,8 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("\tnormalized doc: %+v\n", normDoc)
+	fmt.Println("\tnormalized doc:\n")
+	fmt.Println(normDoc)
 
 	dataset, ok := normDoc.(*ld.RDFDataset)
 	if !ok {
