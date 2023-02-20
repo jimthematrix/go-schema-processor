@@ -141,6 +141,7 @@ func (s Parser) ParseSlots(credential verifiable.W3CCredential, schemaBytes []by
 	fmt.Printf("\tparsed schema: %+v\n", schema)
 
 	if schema.Metadata != nil && schema.Metadata.Serialization != nil {
+		fmt.Printf("\tparsed schema metadata: %+v\n", schema.Metadata)
 		return s.assignSlots(credential.CredentialSubject, *schema.Metadata.Serialization)
 	}
 
