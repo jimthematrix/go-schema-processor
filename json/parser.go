@@ -138,6 +138,7 @@ func (s Parser) ParseSlots(credential verifiable.W3CCredential, schemaBytes []by
 	if err != nil {
 		return processor.ParsedSlots{}, err
 	}
+	fmt.Printf("\tparsed schema: %+v\n", schema)
 
 	if schema.Metadata != nil && schema.Metadata.Serialization != nil {
 		return s.assignSlots(credential.CredentialSubject, *schema.Metadata.Serialization)
@@ -182,7 +183,7 @@ func (s Parser) GetFieldSlotIndex(field string, schemaBytes []byte) (int, error)
 
 // assignSlots assigns index and value fields to specific slot according array order
 func (s Parser) assignSlots(data map[string]interface{}, schema SerializationSchema) (processor.ParsedSlots, error) {
-
+	fmt.Println("=== calling assignSlots()")
 	var err error
 	result := processor.ParsedSlots{
 		IndexA: make([]byte, 0, 32),
