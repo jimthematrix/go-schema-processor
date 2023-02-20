@@ -39,6 +39,7 @@ type Parser struct {
 // ParseClaim creates Claim object from W3CCredential
 func (s Parser) ParseClaim(ctx context.Context, credential verifiable.W3CCredential, credentialType string,
 	jsonSchemaBytes []byte, opts *processor.CoreClaimOptions) (*core.Claim, error) {
+	fmt.Println("=== calling parse.ParseClaim()")
 
 	if opts == nil {
 		opts = &processor.CoreClaimOptions{
@@ -51,8 +52,10 @@ func (s Parser) ParseClaim(ctx context.Context, credential verifiable.W3CCredent
 	}
 
 	subjectID := credential.CredentialSubject["id"]
+	fmt.Printf("\tsubject id: %s\n", subjectID)
 
 	slots, err := s.ParseSlots(credential, jsonSchemaBytes)
+	fmt.Printf("\tparsed slots: %+v\n", slots)
 	if err != nil {
 		return nil, err
 	}
@@ -64,18 +67,21 @@ func (s Parser) ParseClaim(ctx context.Context, credential verifiable.W3CCredent
 		core.WithRevocationNonce(opts.RevNonce),
 		core.WithVersion(opts.Version))
 
+	fmt.Println("\tsetting flag updatable")
 	if opts.Updatable {
 		claim.SetFlagUpdatable(opts.Updatable)
 	}
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("\tsetting expiration data")
 	if credential.Expiration != nil {
 		claim.SetExpirationDate(*credential.Expiration)
 	}
 	if subjectID != nil {
 		var did *core.DID
 		did, err = core.ParseDID(fmt.Sprintf("%v", subjectID))
+		fmt.Printf("\tparsed did: %+v\n", did)
 		if err != nil {
 			return nil, err
 		}
@@ -90,9 +96,11 @@ func (s Parser) ParseClaim(ctx context.Context, credential verifiable.W3CCredent
 		}
 	}
 
+	fmt.Printf("\topts.MerklizedRootPosition: %s\n", opts.MerklizedRootPosition)
 	switch opts.MerklizedRootPosition {
 	case utils.MerklizedRootPositionIndex:
 		mkRoot, err := credential.Merklize(ctx)
+		fmt.Printf("\tindex mkRoot: %+v\n", mkRoot)
 		if err != nil {
 			return nil, err
 		}
@@ -100,8 +108,10 @@ func (s Parser) ParseClaim(ctx context.Context, credential verifiable.W3CCredent
 		if err != nil {
 			return nil, err
 		}
+		fmt.Println("\tdone setting index mk root")
 	case utils.MerklizedRootPositionValue:
 		mkRoot, err := credential.Merklize(ctx)
+		fmt.Printf("\tvalue mkRoot: %+v\n", mkRoot)
 		if err != nil {
 			return nil, err
 		}
@@ -109,6 +119,7 @@ func (s Parser) ParseClaim(ctx context.Context, credential verifiable.W3CCredent
 		if err != nil {
 			return nil, err
 		}
+		fmt.Println("\tdone setting value mk root")
 	case utils.MerklizedRootPositionNone:
 		break
 	default:
