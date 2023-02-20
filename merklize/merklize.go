@@ -1242,6 +1242,7 @@ func MerklizeJSONLD(ctx context.Context, in io.Reader,
 	options.Algorithm = ld.AlgorithmURDNA2015
 	options.SafeMode = mz.safeMode
 
+	fmt.Printf("\tnormalize opts: %+v\n", options)
 	normDoc, err := proc.Normalize(obj, options)
 	if err != nil {
 		return nil, err
