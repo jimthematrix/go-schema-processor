@@ -41,12 +41,13 @@ func (vc *W3CCredential) Merklize(ctx context.Context) (*merklize.Merklizer, err
 		return nil, err
 	}
 	delete(credentialAsMap, "proof")
-	fmt.Printf("\tcredential as map: %+v\n", credentialAsMap)
 
 	credentialWithoutProofBytes, err := json.Marshal(credentialAsMap)
 	if err != nil {
 		return nil, err
 	}
+	print, _ := json.MarshalIndent(credentialAsMap, "", "  ")
+	fmt.Printf("\tcredential as map without proof: %+v\n", print)
 
 	mk, err := merklize.MerklizeJSONLD(ctx, bytes.NewReader(credentialWithoutProofBytes))
 	fmt.Printf("\tmk: %+v, err: %s\n", mk, err)
